@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type ="text" placeholder="what to do next?" id="ip"/>
+  <button onclick="fun()"> Add</button>
+ <ul id="ul">
+    
+
+ </ul>
+</body>
+
+<script>
+async function loadTodos() {
+    document.getElementById('ul').innerHTML = ""
+  var res = await fetch("http://localhost:3000/todos")
+  var ans = await res.json()
+  for(var i=0 ; i<ans.length ; i++)
+  {
+    var li= document.createElement('li')
+ li.innerHTML= ans[i]
+
+ var x=document.getElementById('ul')
+x.appendChild(li)
+
+  }
+
+}
+ loadTodos()
+async function fun(){
+   await fetch("http://localhost:3000/todos", {
+        method:"POST",
+        body: JSON.stringify(document.getElementById('ip').value)
+    })
+    loadTodos()    
+}
+
+
+
+
+
+</script>
+</html>
