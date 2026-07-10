@@ -14,6 +14,7 @@ req.on("end",()=>{
         { db.push(JSON.parse(str))   
         }
         
+        res.setHeader("Access-Control-Allow-Origin","*")
         res.end(JSON.stringify (db))
 })
 
