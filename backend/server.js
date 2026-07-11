@@ -1,24 +1,35 @@
 var db=[]
 
-
+require('dotenv').config()
 const http= require('http')
+const mongoose = require('mongoose')
+
+mongoose.connect(process.env.MONGO_URL)
 const { stringify } = require('querystring')
+const todoSchema = new mongoose.Schema({
+    text: String
+})
+const Todo = mongoose.model("Todo", todoSchema)
+
 const server= http.createServer((req,res)=> {
 var str=""
 console.log(req.method,req.url)
 req.on("data",(data)=>{
  str+=data
 })
-req.on("end",()=>{
+req.on("end",async ()=>{
     if(req.method=="POST")
-        { db.push(JSON.parse(str))   
+        {   var newTodo = new Todo({ text: JSON.parse(str) })
+    await newTodo.save() 
         }
         
         res.setHeader("Access-Control-Allow-Origin","*")
-        res.end(JSON.stringify (db))
+        var allTodos = await Todo.find()
+        console.log("allTodos",allTodos)
+        res.end(JSON.stringify(allTodos.map(t => t.text)))
 })
 
 })
-server.listen(3000,()=>{
+server.listen(process.env.PORT || 3000,()=>{
     console.log("server listening")
 })
